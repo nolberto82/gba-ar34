@@ -93,28 +93,21 @@ class codetype:
         0xFC, 0x31, 0x09, 0x48, 0xA3, 0xFF, 0x92, 0x12, 0x58, 0xE9, 0xFA, 0xAE, 0x4F, 0xE2, 0xB4, 0xCC]
 
 
-code = '''49AC43F8 B03D56E3
-69B81789 A52E8572
-1461545F 403C83A8
-157FBF50 089B3737
-505B0357 E1B2B4B8
-EDD3C458 ED8F6A29
-DEEBD3AE 658F69F3
-8A5A9B5D 127F5869
-FA54BC6B B87A77EC
-D67F07C8 63255070
-178DB5C0 7529A549
-654485D1 0D2EBB53'''
-
 def main():
     try:
         gbarom = sys.argv[1]
+        #gbarom = ""
     except IndexError:
         print("No file dropped")
         sys.exit()
 
+    codetxt = ""
+    codefile = os.path.splitext(gbarom)[0]+'.txt'
+    with open(codefile,"r") as rfile:
+           codetxt = rfile.read()
+
     codetypes = codetype(7, 16, 8, 1)
-    lines = code.split("\n")
+    lines = codetxt.split("\n")
     seeds = codetypes.ar_deaface(0)
     codetypes.decrypt(lines,seeds)
 
