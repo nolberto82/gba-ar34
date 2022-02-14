@@ -3,7 +3,7 @@ import io
 import os
 import sys
 import string
-import getopt
+import shutil
 
 codeaddr = []
 codevalue = []
@@ -110,8 +110,8 @@ def main():
         sys.exit()
 
     lines = []
-    codefile = os.path.splitext(gbarom)[0]+'.cht'
-    with open(codefile,"r") as rfile:
+    codefile = os.path.splitext(gbarom)[0]
+    with open(codefile +'.cht',"r") as rfile:
            txt = rfile.read().split("\n")
            for t in txt:
                t = t.replace(" ", "")
@@ -120,19 +120,35 @@ def main():
                if all(c in string.hexdigits for c in t):
                    lines.append(t)
 
+
     codetypes = codetype(7, 16, 8, 1)
     #lines = codetxt.split("\n")
     seeds = codetypes.ar_deaface(0)
     codetypes.decrypt(lines,seeds)
 
-    with open(gbarom,"r+b") as wfile:
+    for v in codeaddr:
+        v = v >> 24 & 30
+        if v == 0:
+            print("Not an Action Replay v3 code")
+            sys.exit()
+
+
+    shutil.copy(codefile + ".gba", codefile + "_Patched.gba")
+
+    codenum = 0
+    with open(codefile + "_Patched.gba","r+b") as wfile:
         for i in range(len(codeaddr)):
             codeaddr[i] = (codeaddr[i] & 0xffffff) * 2;
             bytes = bytearray.fromhex(codevalue[i].to_bytes(2,byteorder='little').hex())
             wfile.seek(codeaddr[i])
             wfile.write(bytes)
-            print("Patching successful")
+            codenum = i + 1
+
+    print("Patched " + str(codenum) + " codes successfully")
 
 
 if __name__ == "__main__":
     main()
+
+#beg = t.find('\"') + 1
+#end = t.find('\"', beg)

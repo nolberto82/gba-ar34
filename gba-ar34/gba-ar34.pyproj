@@ -12,7 +12,7 @@
     <Name>gba-ar34</Name>
     <RootNamespace>gba-ar34</RootNamespace>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments>"Metroid - Zero Mission (USA).gba"</CommandLineArguments>
+    <CommandLineArguments>"Super Mario Advance 4 - Super Mario Bros. 3 (USA).gba"</CommandLineArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
