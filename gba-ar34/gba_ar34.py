@@ -3,6 +3,7 @@ import io
 import os
 import sys
 import string
+import getopt
 
 codeaddr = []
 codevalue = []
@@ -95,14 +96,21 @@ class codetype:
 
 def main():
     try:
-        #gbarom = sys.argv[1]
-        gbarom = "Metroid - Zero Mission (USA).gba"
+        gbarom = sys.argv[1]
     except IndexError:
         print("No file dropped")
+        try:
+            gbarom = sys.argv[1]
+        except IndexError:
+            print ("No file")
+            sys.exit()
+
+    if not os.path.exists(gbarom):
+        print("File does not exist")
         sys.exit()
 
     lines = []
-    codefile = os.path.splitext(gbarom)[0]+'.txt'
+    codefile = os.path.splitext(gbarom)[0]+'.cht'
     with open(codefile,"r") as rfile:
            txt = rfile.read().split("\n")
            for t in txt:
@@ -123,6 +131,8 @@ def main():
             bytes = bytearray.fromhex(codevalue[i].to_bytes(2,byteorder='little').hex())
             wfile.seek(codeaddr[i])
             wfile.write(bytes)
+            print("Patching successful")
+
 
 if __name__ == "__main__":
     main()
