@@ -1,8 +1,8 @@
 import array
+import io
 import os
 import sys
-
-
+import string
 
 codeaddr = []
 codevalue = []
@@ -22,7 +22,7 @@ class codetype:
     def decrypt(self, lines, seeds):
         for ln in lines:
             upper = int(ln[0:8], 16)
-            lower = int(ln[9:18], 16)
+            lower = int(ln[8:17], 16)
             rollingseed = 0xC6EF3720
 
             for i in range(32):
@@ -95,26 +95,31 @@ class codetype:
 
 def main():
     try:
-        gbarom = sys.argv[1]
-        #gbarom = ""
+        #gbarom = sys.argv[1]
+        gbarom = "Metroid - Zero Mission (USA).gba"
     except IndexError:
         print("No file dropped")
         sys.exit()
 
-    codetxt = ""
+    lines = []
     codefile = os.path.splitext(gbarom)[0]+'.txt'
     with open(codefile,"r") as rfile:
-           codetxt = rfile.read()
+           txt = rfile.read().split("\n")
+           for t in txt:
+               t = t.replace(" ", "")
+               if not t:
+                    continue
+               if all(c in string.hexdigits for c in t):
+                   lines.append(t)
 
     codetypes = codetype(7, 16, 8, 1)
-    lines = codetxt.split("\n")
+    #lines = codetxt.split("\n")
     seeds = codetypes.ar_deaface(0)
     codetypes.decrypt(lines,seeds)
 
     with open(gbarom,"r+b") as wfile:
         for i in range(len(codeaddr)):
             codeaddr[i] = (codeaddr[i] & 0xffffff) * 2;
-            #print('{:08X} {:08X}'.format(codeaddr[i], codevalue[i]))
             bytes = bytearray.fromhex(codevalue[i].to_bytes(2,byteorder='little').hex())
             wfile.seek(codeaddr[i])
             wfile.write(bytes)
