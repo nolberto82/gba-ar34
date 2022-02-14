@@ -110,6 +110,7 @@ def main():
         sys.exit()
 
     lines = []
+
     codefile = os.path.splitext(gbarom)[0]
     with open(codefile +'.cht',"r") as rfile:
            txt = rfile.read().split("\n")
